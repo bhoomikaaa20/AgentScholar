@@ -27,3 +27,4 @@ typing-extensions
 
 #other
 rich
+streamlit
