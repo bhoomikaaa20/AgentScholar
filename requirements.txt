@@ -1,0 +1,25 @@
+# LLM & Agent Framework
+langchain
+langchain-openai
+langchain-core
+langgraph
+
+# Environment Variables
+python-dotenv
+
+# HTTP / API
+requests
+httpx
+
+# Data Validation
+pydantic
+
+# Web Search / Tools
+tavily-python
+
+# API Backend (optional)
+fastapi
+uvicorn
+
+# Utilities
+typing-extensions
