@@ -1,7 +1,7 @@
 [project]
 name = "multiagentsystem"
 version = "0.1.0"
-description = "Research Desk: a multi-agent AI research assistant (LangChain, OpenAI, Tavily, Streamlit)"
+description = "AgentScholar: a multi-agent AI research assistant (LangChain, OpenAI, Tavily, Streamlit)"
 readme = "README.md"
 authors = [
     { name = "bhoomikaaa20", email = "bhoomikasomavarapu15@gmail.com" }

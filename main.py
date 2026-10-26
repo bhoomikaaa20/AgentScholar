@@ -20,14 +20,14 @@ REPO_URL = "https://github.com/bhoomikaaa20/MultiAgentSystem"
 
 # ---------------------------------------------------------------- page setup
 st.set_page_config(
-    page_title="Research Desk · Multi-Agent AI Researcher",
+    page_title="AgentScholar · Multi-Agent AI Research Assistant",
     page_icon="🔎",
     layout="wide",
     initial_sidebar_state="auto",
     menu_items={
         "Get help": REPO_URL,
         "Report a bug": f"{REPO_URL}/issues",
-        "About": "Research Desk — a multi-agent research assistant built with LangChain, OpenAI and Tavily.",
+        "About": "AgentScholar — a multi-agent research assistant built with LangChain, OpenAI and Tavily.",
     },
 )
 
@@ -73,9 +73,11 @@ st.markdown(
     --glow: 0 0 0 1px rgba(139, 92, 246, .35), 0 10px 40px -10px rgba(139, 92, 246, .55);
 }
 
-html, body, [class*="st-"], .stMarkdown, button, input, textarea {
+/* Streamlit's Material icons are ligature spans marked translate="no"; overriding their font prints the icon name. */
+html, body, [class*="st-"]:not([translate="no"]), .stMarkdown, button, input, textarea {
     font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
 }
+span[translate="no"][data-testid] { font-family: 'Material Symbols Rounded' !important; }
 code, pre, .mono { font-family: 'JetBrains Mono', ui-monospace, monospace !important; }
 
 /* ---------- aurora background ---------- */
@@ -439,6 +441,12 @@ def parse_sources(raw_blocks: list[str]) -> list[dict]:
     return sources
 
 
+def one_line(text: str) -> str:
+    # A newline inside st.markdown HTML ends the HTML block and lets markdown (e.g. "## ...") leak out.
+    text = re.sub(r"(^|\s)#{1,6}(?=\s)", " ", str(text))
+    return " ".join(text.split())
+
+
 def host_of(url: str) -> str:
     return re.sub(r"^https?://(www\.)?", "", url).split("/")[0]
 
@@ -620,7 +628,7 @@ with st.sidebar:
         """
 <div class="brand">
   <div class="logo" aria-hidden="true">🔎</div>
-  <div><div class="name">Research Desk</div><div class="tag">Multi-agent AI researcher</div></div>
+  <div><div class="name">AgentScholar</div><div class="tag">Multi-agent AI researcher</div></div>
 </div>
 """,
         unsafe_allow_html=True,
@@ -745,7 +753,7 @@ if saved:
     m1, m2, m3, m4 = st.columns(4)
     m1.metric("Critic score", f"{score}/10" if score else "—")
     m2.metric("Sources found", len(sources))
-    m3.metric("Report length", f"{len(report.split()):,} words")
+    m3.metric("Words", f"{len(report.split()):,}")
     m4.metric("Run time", f"{saved['seconds']:.0f}s")
 
     tab_report, tab_critic, tab_sources, tab_scrape = st.tabs(
@@ -779,14 +787,17 @@ if saved:
 
     with tab_sources:
         if sources:
+            # Leading <div> makes markdown treat this as a raw HTML block instead of wrapping it in <p>.
             st.markdown(
-                "".join(
+                '<div class="sources">'
+                + "".join(
                     f'<a class="source" href="{safe_href(s["url"])}" target="_blank" rel="noopener noreferrer">'
-                    f'<span class="num">{i}</span><span class="title">{esc(s["title"])}</span>'
+                    f'<span class="num">{i}</span><span class="title">{esc(one_line(s["title"]))}</span>'
                     f'<div class="host">{esc(host_of(s["url"]))} ↗</div>'
-                    f'<div class="snip">{esc(s["content"])}</div></a>'
+                    f'<div class="snip">{esc(one_line(s["content"]))}</div></a>'
                     for i, s in enumerate(sources, start=1)
-                ),
+                )
+                + "</div>",
                 unsafe_allow_html=True,
             )
         else:
