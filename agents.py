@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-load_dotenv()
+load_dotenv(override=True)  # .env wins over stale shell variables
 
 from langchain_openai import ChatOpenAI
 from langchain_core.output_parsers import StrOutputParser
